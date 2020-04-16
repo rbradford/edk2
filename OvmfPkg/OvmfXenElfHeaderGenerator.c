@@ -43,7 +43,7 @@ int main(void)
   size_t offset_into_file = 0;
 
   /* ELF file header */
-  Elf32_Ehdr hdr = {
+  Elf64_Ehdr hdr = {
     .e_ident = ELFMAG,
     .e_type = ET_EXEC,
     .e_machine = EM_386,
@@ -51,11 +51,11 @@ int main(void)
     .e_entry = ovmfxen_pvh_entry_point,
     .e_flags = R_386_NONE,
     .e_ehsize = sizeof (hdr),
-    .e_phentsize = sizeof (Elf32_Phdr),
+    .e_phentsize = sizeof (Elf64_Phdr),
   };
   offset_into_file += sizeof (hdr);
 
-  hdr.e_ident[EI_CLASS] = ELFCLASS32;
+  hdr.e_ident[EI_CLASS] = ELFCLASS64;
   hdr.e_ident[EI_DATA] = ELFDATA2LSB;
   hdr.e_ident[EI_VERSION] = EV_CURRENT;
   hdr.e_ident[EI_OSABI] = ELFOSABI_LINUX;
@@ -63,14 +63,14 @@ int main(void)
   hdr.e_phoff = sizeof (hdr);
 
   /* program header */
-  Elf32_Phdr phdr_load = {
+  Elf64_Phdr phdr_load = {
     .p_type = PT_LOAD,
     .p_offset = 0, /* load everything */
     .p_paddr = ovmf_base_address,
     .p_filesz = ovmf_blob_size,
     .p_memsz = ovmf_blob_size,
     .p_flags = PF_X | PF_W | PF_R,
-    .p_align = 0,
+    .p_align = 4,
   };
   phdr_load.p_vaddr = phdr_load.p_paddr;
   hdr.e_phnum += 1;
@@ -89,12 +89,12 @@ int main(void)
       sizeof (xen_elfnote_phys32_entry) -
       offsetof (xen_elfnote_phys32_entry, desc),
   };
-  Elf32_Phdr phdr_note = {
+  Elf64_Phdr phdr_note = {
     .p_type = PT_NOTE,
     .p_filesz = sizeof (xen_elf_note),
     .p_memsz = sizeof (xen_elf_note),
     .p_flags = PF_R,
-    .p_align = 0,
+    .p_align = 4,
   };
   hdr.e_phnum += 1;
   offset_into_file += sizeof (phdr_note);
