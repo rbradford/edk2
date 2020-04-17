@@ -1233,6 +1233,8 @@ PciAcpiInitialization (
       PciWrite8 (PCI_LIB_ADDRESS (0, 0x1f, 0, 0x6a), PciHostIrqs[2]); // G
       PciWrite8 (PCI_LIB_ADDRESS (0, 0x1f, 0, 0x6b), PciHostIrqs[3]); // H
       break;
+    case 0xd57:
+      return;
     default:
       if (XenDetected ()) {
         //

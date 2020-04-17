@@ -139,7 +139,7 @@ QemuUc32BaseInitialization (
     return;
   }
 
-  if (mHostBridgeDevId == INTEL_Q35_MCH_DEVICE_ID) {
+  if (mHostBridgeDevId == INTEL_Q35_MCH_DEVICE_ID || mHostBridgeDevId == 0xd57) {
     //
     // On q35, the 32-bit area that we'll mark as UC, through variable MTRRs,
     // starts at PcdPciExpressBaseAddress. The platform DSC is responsible for
@@ -778,21 +778,22 @@ QemuInitializeRam (
   if (IsMtrrSupported ()) {
     MtrrGetAllMtrrs (&MtrrSettings);
 
-    //
-    // MTRRs disabled, fixed MTRRs disabled, default type is uncached
-    //
-    ASSERT ((MtrrSettings.MtrrDefType & BIT11) == 0);
-    ASSERT ((MtrrSettings.MtrrDefType & BIT10) == 0);
-    ASSERT ((MtrrSettings.MtrrDefType & 0xFF) == 0);
+    if (mHostBridgeDevId != 0xd57) {
+      //
+      // MTRRs disabled, fixed MTRRs disabled, default type is uncached
+      //
+      ASSERT ((MtrrSettings.MtrrDefType & BIT11) == 0);
+      ASSERT ((MtrrSettings.MtrrDefType & BIT10) == 0);
+      ASSERT ((MtrrSettings.MtrrDefType & 0xFF) == 0);
 
-    //
-    // flip default type to writeback
-    //
-    SetMem (&MtrrSettings.Fixed, sizeof MtrrSettings.Fixed, 0x06);
-    ZeroMem (&MtrrSettings.Variables, sizeof MtrrSettings.Variables);
-    MtrrSettings.MtrrDefType |= BIT11 | BIT10 | 6;
-    MtrrSetAllMtrrs (&MtrrSettings);
-
+      //
+      // flip default type to writeback
+      //
+      SetMem (&MtrrSettings.Fixed, sizeof MtrrSettings.Fixed, 0x06);
+      ZeroMem (&MtrrSettings.Variables, sizeof MtrrSettings.Variables);
+      MtrrSettings.MtrrDefType |= BIT11 | BIT10 | 6;
+      MtrrSetAllMtrrs (&MtrrSettings);
+    }
     //
     // Set memory range from 640KB to 1MB to uncacheable
     //

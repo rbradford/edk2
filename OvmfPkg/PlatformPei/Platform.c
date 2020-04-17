@@ -341,6 +341,9 @@ MiscInitialization (
   //
   BuildCpuHob (mPhysMemAddressWidth, 16);
 
+  PcdStatus = PcdSet16S (PcdOvmfHostBridgePciDevId, mHostBridgeDevId);
+  ASSERT_RETURN_ERROR (PcdStatus);
+
   //
   // Determine platform type and save Host Bridge DID to PCD
   //
@@ -361,14 +364,14 @@ MiscInitialization (
       AcpiCtlReg = POWER_MGMT_REGISTER_Q35 (ICH9_ACPI_CNTL);
       AcpiEnBit  = ICH9_ACPI_CNTL_ACPI_EN;
       break;
+    case 0xd57:
+      return;
     default:
       DEBUG ((DEBUG_ERROR, "%a: Unknown Host Bridge Device ID: 0x%04x\n",
         __FUNCTION__, mHostBridgeDevId));
       ASSERT (FALSE);
       return;
   }
-  PcdStatus = PcdSet16S (PcdOvmfHostBridgePciDevId, mHostBridgeDevId);
-  ASSERT_RETURN_ERROR (PcdStatus);
 
   //
   // If the appropriate IOspace enable bit is set, assume the ACPI PMBA
