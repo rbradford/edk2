@@ -426,9 +426,10 @@ DumpPciBars (
 
     DEBUG ((
       EFI_D_INFO,
-      "   BAR[%d]: Type = %s; Alignment = 0x%lx;\tLength = 0x%lx;\tOffset = 0x%02x\n",
+      "   BAR[%d]: Type = %s; BaseAddress = 0x%lx; Alignment = 0x%lx;\tLength = 0x%lx;\tOffset = 0x%02x\n",
       Index, mBarTypeStr[MIN (PciIoDevice->PciBar[Index].BarType, PciBarTypeMaxType)],
-      PciIoDevice->PciBar[Index].Alignment, PciIoDevice->PciBar[Index].Length, PciIoDevice->PciBar[Index].Offset
+      PciIoDevice->PciBar[Index].BaseAddress, PciIoDevice->PciBar[Index].Alignment,
+      PciIoDevice->PciBar[Index].Length, PciIoDevice->PciBar[Index].Offset
       ));
   }
 
