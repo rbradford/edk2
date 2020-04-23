@@ -40,6 +40,9 @@ ResetShutdown (
   case INTEL_Q35_MCH_DEVICE_ID:
     AcpiPmBaseAddress = ICH9_PMBASE_VALUE;
     break;
+  case 0xd57:
+    IoWrite8 (0x3c0, 5 << 2 | 1 << 5);
+    CpuDeadLoop ();
   default:
     ASSERT (FALSE);
     CpuDeadLoop ();
