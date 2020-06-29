@@ -173,6 +173,7 @@ SmbiosTablePublishEntry (
   EFI_SMBIOS_PROTOCOL       *Smbios;
   SMBIOS_TABLE_ENTRY_POINT  *EntryPointStructure;
   UINT8                     *SmbiosTables;
+  BOOLEAN                    FreeTables = FALSE;
 
   //
   // Find the SMBIOS protocol
@@ -194,6 +195,20 @@ SmbiosTablePublishEntry (
     SmbiosTables = (UINT8*)(UINTN)EntryPointStructure->TableAddress;
   } else {
     SmbiosTables = GetQemuSmbiosTables ();
+    FreeTables = TRUE;
+  }
+
+  if (SmbiosTables == NULL) {
+    SMBIOS_TABLE_3_0_ENTRY_POINT *CloudHypervisorTables = (VOID *)0xf0000;
+
+    if (CloudHypervisorTables->AnchorString[0] == '_' &&
+        CloudHypervisorTables->AnchorString[1] == 'S' &&
+        CloudHypervisorTables->AnchorString[2] == 'M' &&
+        CloudHypervisorTables->AnchorString[3] == '3' &&
+        CloudHypervisorTables->AnchorString[4] == '_') {
+          SmbiosTables = (UINT8*)(UINTN)CloudHypervisorTables->TableAddress;
+          FreeTables = FALSE;
+    }
   }
 
   if (SmbiosTables != NULL) {
@@ -202,7 +217,7 @@ SmbiosTablePublishEntry (
     //
     // Free SmbiosTables if allocated by Qemu (i.e., NOT by Xen):
     //
-    if (EntryPointStructure == NULL) {
+    if (FreeTables) {
       FreePool (SmbiosTables);
     }
   }
