@@ -474,6 +474,7 @@ LegacyRegionInit (
     mRegisterValues = mRegisterValues440;
     break;
   case INTEL_Q35_MCH_DEVICE_ID:
+  case 0x0d57: // Cloud Hypervisor host bridge
     mRegisterValues = mRegisterValuesQ35;
     break;
   default:
