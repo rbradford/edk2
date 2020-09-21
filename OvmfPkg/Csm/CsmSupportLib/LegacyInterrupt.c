@@ -189,6 +189,7 @@ LegacyInterruptInstall (
       mLegacyInterruptDevice = LEGACY_INT_DEV_PIIX4;
       break;
     case INTEL_Q35_MCH_DEVICE_ID:
+    case 0xd57: // Cloud Hypervisor host bridge
       mLegacyInterruptDevice = LEGACY_INT_DEV_Q35;
       break;
     default:
