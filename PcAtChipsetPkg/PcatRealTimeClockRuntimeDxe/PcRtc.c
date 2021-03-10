@@ -254,6 +254,7 @@ PcRtcInit (
     if (!EfiAtRuntime ()) {
       EfiReleaseLock (&Global->RtcLock);
     }
+      DEBUG ((EFI_D_INFO, "DeviceError 1\n"));
     return EFI_DEVICE_ERROR;
   }
   //
@@ -331,6 +332,7 @@ PcRtcInit (
   //
   Status = PcRtcSetTime (&Time, Global);
   if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_INFO, "DeviceError 2\n"));
     return EFI_DEVICE_ERROR;
   }
 
@@ -372,6 +374,7 @@ PcRtcInit (
     if (!EfiAtRuntime ()) {
     EfiReleaseLock (&Global->RtcLock);
     }
+    DEBUG ((EFI_D_INFO, "DeviceError 3\n"));
     return EFI_DEVICE_ERROR;
   }
 
@@ -391,6 +394,7 @@ PcRtcInit (
     if (!EfiAtRuntime ()) {
       EfiReleaseLock (&Global->RtcLock);
     }
+    DEBUG ((EFI_D_INFO, "DeviceError 4\n"));
     return EFI_DEVICE_ERROR;
   }
 
@@ -1040,6 +1044,8 @@ RtcWaitToUpdate (
   RegisterD.Data = RtcRead (RTC_ADDRESS_REGISTER_D);
 
   if (RegisterD.Bits.Vrt == 0) {
+          DEBUG ((EFI_D_INFO, "DeviceError 1.1\n"));
+
     return EFI_DEVICE_ERROR;
   }
   //
@@ -1055,6 +1061,7 @@ RtcWaitToUpdate (
 
   RegisterD.Data = RtcRead (RTC_ADDRESS_REGISTER_D);
   if (Timeout == 0 || RegisterD.Bits.Vrt == 0) {
+    DEBUG ((EFI_D_INFO, "DeviceError 1.2\n"));
     return EFI_DEVICE_ERROR;
   }
 
